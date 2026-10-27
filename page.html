@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="{{.Lang}}">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Go · Master da Web</title>
+  <style>
+    :root { --bg: #f7f7f8; --card: #fff; --text: #18181b; --muted: #71717a; --line: #e4e4e7; --ok: #16a34a; --bad: #dc2626; --accent: #007d9c; --on-accent: #fff; }
+    @media (prefers-color-scheme: dark) { :root { --bg: #0f0f11; --card: #18181b; --text: #f4f4f5; --muted: #a1a1aa; --line: #27272a; --accent: #00add8; --on-accent: #062a33; } }
+    * { box-sizing: border-box; }
+    body { margin: 0; background: var(--bg); color: var(--text); font: 15px/1.55 ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif; }
+    main { max-width: 860px; margin: 0 auto; padding: 40px 16px 64px; }
+    .brand { color: var(--muted); font-size: 13px; letter-spacing: .02em; }
+    h1 { font-size: 30px; line-height: 1.2; margin: 6px 0 8px; }
+    h2 { font-size: 17px; margin: 0 0 14px; }
+    .lead { color: var(--muted); margin: 0 0 28px; max-width: 640px; }
+    .muted { color: var(--muted); margin: 14px 0 0; } .muted a { color: inherit; }
+    section { background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 20px; margin-bottom: 16px; }
+    .checks, .files { list-style: none; padding: 0; margin: 0; }
+    .checks li, .files li { display: flex; flex-wrap: wrap; gap: 4px 12px; align-items: baseline; padding: 8px 0; border-top: 1px solid var(--line); }
+    .checks li:first-child, .files li:first-child { border-top: 0; }
+    .files { margin-top: 16px; } .files a { color: inherit; font-weight: 600; } .files span { color: var(--muted); font-size: 13px; }
+    .dot { width: 9px; height: 9px; border-radius: 50%; flex: none; transform: translateY(-1px); }
+    .dot.ok { background: var(--ok); } .dot.bad { background: var(--bad); }
+    .name { font-weight: 600; min-width: 150px; }
+    .detail { color: var(--muted); overflow-wrap: anywhere; } .detail.bad { color: var(--bad); }
+    form { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+    input[type=file] { flex: 1 1 260px; color: var(--muted); }
+    button { background: var(--accent); color: var(--on-accent); border: 0; border-radius: 8px; padding: 9px 16px; font: inherit; font-weight: 600; cursor: pointer; }
+    .note { margin: 12px 0 0; padding: 10px 12px; border-radius: 8px; font-size: 14px; }
+    .note.ok { background: color-mix(in srgb, var(--ok) 12%, transparent); }
+    .note.bad { background: color-mix(in srgb, var(--bad) 12%, transparent); color: var(--bad); }
+    ol { margin: 0; padding-left: 20px; } ol li { margin: 6px 0; }
+    footer { color: var(--muted); font-size: 13px; margin-top: 24px; } footer a { color: inherit; }
+  </style>
+</head>
+<body>
+<main>
+  <div class="brand">Go · Master da Web</div>
+  <h1>{{index .T "title"}}</h1>
+  <p class="lead">{{index .T "lead"}}</p>
+
+  <section aria-labelledby="status">
+    <h2 id="status">{{index .T "reaches"}}</h2>
+    <ul class="checks" data-testid="checks">
+      <li data-check="storage" data-ok="{{.Storage.OK}}">
+        <span class="dot {{if .Storage.OK}}ok{{else}}bad{{end}}" aria-hidden="true"></span>
+        <span class="name">Object Storage</span>
+        <span class="detail {{if not .Storage.OK}}bad{{end}}">{{.Storage.Detail}}</span>
+      </li>
+      <li data-check="runtime" data-ok="true">
+        <span class="dot ok" aria-hidden="true"></span>
+        <span class="name">Runtime</span>
+        <span class="detail">{{.Go}}</span>
+      </li>
+    </ul>
+  </section>
+
+  <section aria-labelledby="files">
+    <h2 id="files">{{index .T "send"}}</h2>
+    <form method="post" action="/files" enctype="multipart/form-data">
+      <input type="file" name="file" required aria-label="{{index .T "file"}}">
+      <button type="submit">{{index .T "submit"}}</button>
+    </form>
+    {{with .Note}}<p class="note ok" role="status">{{.}}</p>{{end}}
+    {{with .Problem}}<p class="note bad" role="alert">{{.}}</p>{{end}}
+    {{if .Files}}
+      <ul class="files" data-testid="uploads">
+        {{range .Files}}<li><a href="{{.URL}}">{{.Name}}</a><span>{{size .Size}} · {{index $.T "download"}}</span></li>{{end}}
+      </ul>
+    {{else}}
+      <p class="muted">{{index .T "none"}}</p>
+    {{end}}
+    <p class="muted"><a href="/files">GET /files</a> — {{index .T "api"}}</p>
+  </section>
+
+  <section aria-labelledby="next">
+    <h2 id="next">{{index .T "next"}}</h2>
+    <ol><li>{{index .T "step1"}}</li><li>{{index .T "step2"}}</li><li>{{index .T "step3"}}</li></ol>
+  </section>
+
+  <footer><a href="/status.json">status.json</a></footer>
+</main>
+</body>
+</html>

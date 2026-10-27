@@ -1,0 +1,4 @@
+/out
+/template-go
+.env
+.DS_Store

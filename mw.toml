@@ -1,0 +1,5 @@
+# How the platform runs this app, kept with its code. A setting written here
+# is read-only in the console: change it here and push.
+
+[deploy]
+health_check_path = "/health"
